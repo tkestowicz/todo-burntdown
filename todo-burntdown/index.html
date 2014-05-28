@@ -1,0 +1,38 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>ToDo burndown</title>
+    <link rel="stylesheet" href="Content/bootstrap.min.css" />
+    <link rel="stylesheet" href="Content/bootstrap-theme.min.css" />
+    <script type="text/javascript" src="Scripts/libs/jquery-2.1.1.min.js"></script>
+    <script type="text/javascript" src="Scripts/libs/bootstrap.min.js"></script>
+    <script type="text/javascript" src="Scripts/libs/knockout-3.1.0.js"></script>
+    <script data-main="Scripts/main" src="Scripts/libs/require.js"></script>
+</head>
+<body>
+    <section class="row">
+        <div class="col-lg-4 col-lg-offset-1">
+            <div class="row">
+                <button type="button" class="btn btn-default btn-lg" data-bind="click: newTodoItem">
+                    <span class="glyphicon glyphicon-plus-sign"></span>Dodaj zadanie
+                </button>
+            </div>
+        </div>
+    </section>
+    <section class="row">
+        <div class="col-lg-5 col-lg-offset-1" data-bind="foreach: todoItems">
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" value="">
+                     <input type="text" class="form-control" placeholder="Treść zadania123" data-bind="value: text">
+                </label>
+                <input type="text" class="form-control" placeholder="Szacowany czas">
+                <input type="text" class="form-control" placeholder="Wykorzystany czas">
+                <button type="button" class="btn btn-default btn-xs" data-bind="click: $parent.removeTodoItem">
+                    <span class="glyphicon glyphicon-plus-sign"></span>Usuń zadanie
+                </button>
+            </div>
+        </div>
+    </section>
+</body>
+</html>
