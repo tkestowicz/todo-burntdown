@@ -23,15 +23,22 @@
         <div class="col-lg-5 col-lg-offset-1" data-bind="foreach: todoItems">
             <div class="checkbox">
                 <label>
-                    <input type="checkbox" value="">
-                     <input type="text" class="form-control" placeholder="Treść zadania123" data-bind="value: text">
+                    <input type="checkbox" data-item="checked: isDone">
+                    <input type="text" class="form-control" placeholder="Treść zadania" data-bind="value: text">
                 </label>
-                <input type="text" class="form-control" placeholder="Szacowany czas">
-                <input type="text" class="form-control" placeholder="Wykorzystany czas">
+                <input type="text" class="form-control" placeholder="Szacowany czas" data-bind="value: expectedWork">
+                <input type="text" class="form-control" placeholder="Wykorzystany czas" data-bind="value: actualWork">
                 <button type="button" class="btn btn-default btn-xs" data-bind="click: $parent.removeTodoItem">
                     <span class="glyphicon glyphicon-plus-sign"></span>Usuń zadanie
                 </button>
             </div>
+        </div>
+    </section>
+    <section class="row">
+        <div class="col-lg-4 col-lg-offset-1">
+            <span>Wykonana robota: <span class="badge" data-bind="text: workSummary.actual"></span></span>
+            <span>Cała robota do wykonania: <span class="badge" data-bind="text: workSummary.expected"></span></span>
+            <span>Pozostało do wykonania: <span class="badge" data-bind="text: workSummary.expected() - workSummary.actual()"></span></span>
         </div>
     </section>
 </body>
