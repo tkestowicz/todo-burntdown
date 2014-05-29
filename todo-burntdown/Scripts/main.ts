@@ -28,7 +28,9 @@ require(['viewmodels/todoViewModel', 'viewmodels/settingsViewModel', 'viewmodels
         todoSummary = new summary.SummaryViewModel();
 
     todoSettings.createNewTodoItemHandler = todoList.newTodoItem;
+    todoSettings.stateChanged = todoList.toogleAccessibility;
     todoList.valuesUpdated = todoSummary.updateSummary;
+    
 
     ko.applyBindings(todoSettings, $('#settings')[0]);
     ko.applyBindings(todoList, $('#todoList')[0]);

@@ -8,6 +8,8 @@ export class SettingsViewModel {
         to: ko.observable()
     };
 
+    isRunning = ko.observable(false);
+
     duration = ko.computed(() => {
         if (this.timeRange.from() === undefined || this.timeRange.to() === undefined)
             return 0;
@@ -16,5 +18,12 @@ export class SettingsViewModel {
     });
 
     public createNewTodoItemHandler: () => void;
+    public stateChanged: (isRunning: boolean) => void;
+
+    changeState = () => {
+        this.isRunning(!this.isRunning());
+
+        this.stateChanged(this.isRunning());
+    }
 
 };

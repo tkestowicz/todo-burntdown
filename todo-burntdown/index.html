@@ -11,14 +11,19 @@
     <section class="row" id="settings">
         <div class="col-lg-4 col-lg-offset-1">
             <div class="row">
-                <button type="button" class="btn btn-default btn-lg" data-bind="click: createNewTodoItemHandler">
+                <button type="button" class="btn btn-default btn-lg" data-bind="click: createNewTodoItemHandler, disable: isRunning() === true">
                     <span class="glyphicon glyphicon-plus-sign"></span>Dodaj zadanie
                 </button>
                 Czas trwania sprintu:
-                <input type="date" data-bind="value: timeRange.from"/>
+                <input type="date" data-bind="value: timeRange.from, disable: isRunning() === true" />
                 -
-                <input type="date" data-bind="value: timeRange.to" />
+                <input type="date" data-bind="value: timeRange.to, disable: isRunning() === true" />
                 Długość sprintu: <span data-bind="text: duration"></span>
+
+                <button type="button" class="btn" data-bind="click: changeState, css: { 'btn-success': isRunning() === false, 'btn-danger': isRunning() === true }">
+                    <span class="glyphicon" data-bind="css: { 'glyphicon-play': isRunning() === false, 'glyphicon-stop': isRunning() === true }"></span>
+                    <span data-bind="text: isRunning() === true ? 'Zatrzymaj' : 'Rozpocznij'"></span>
+                </button>
             </div>
         </div>
     </section>
@@ -27,11 +32,11 @@
             <div class="checkbox">
                 <label>
                     <input type="checkbox" data-bind="checked: isDone">
-                    <input type="text" class="form-control" placeholder="Treść zadania" data-bind="value: text">
+                    <input type="text" class="form-control" placeholder="Treść zadania" data-bind="value: text, enable: $parent.isEnabled">
                 </label>
-                <input type="text" class="form-control" placeholder="Szacowany czas" data-bind="value: expectedWork">
+                <input type="text" class="form-control" placeholder="Szacowany czas" data-bind="value: expectedWork, enable: $parent.isEnabled">
                 <input type="text" class="form-control" placeholder="Wykorzystany czas" data-bind="value: actualWork">
-                <button type="button" class="btn btn-default btn-xs" data-bind="click: $parent.removeTodoItem">
+                <button type="button" class="btn btn-default btn-xs" data-bind="click: $parent.removeTodoItem, visible: $parent.isEnabled">
                     <span class="glyphicon glyphicon-plus-sign"></span>Usuń zadanie
                 </button>
             </div>

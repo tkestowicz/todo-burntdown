@@ -24,12 +24,18 @@ export class TodoViewModel {
         actual: ko.computed(() => utils.calculateSumFromProperty(this.todoItems(), (el) => el.actualWork()), this)
     };
 
+    private isEnabled = ko.observable(true);
+
     constructor() {
         this.workSummary.expected.subscribe(() => this.valuesUpdated(this.workSummary));
         this.workSummary.actual.subscribe(() => this.valuesUpdated(this.workSummary));
     }
 
     valuesUpdated: (workSummary: IWorkSummary) => void;
+
+    toogleAccessibility = (enabled: boolean) => {
+        this.isEnabled(!enabled);
+    }
 
     newTodoItem = () => {
 

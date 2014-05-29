@@ -94,6 +94,8 @@
     <Content Include="Scripts\typings\requirejs\require.d.ts" />
     <TypeScriptCompile Include="Scripts\viewmodels\settingsViewModel.ts" />
     <TypeScriptCompile Include="Scripts\viewmodels\todoViewModel.ts" />
+    <TypeScriptCompile Include="Scripts\viewmodels\summaryViewModel.ts" />
+    <TypeScriptCompile Include="Scripts\utils.ts" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
