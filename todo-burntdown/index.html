@@ -4,26 +4,29 @@
     <title>ToDo burndown</title>
     <link rel="stylesheet" href="Content/bootstrap.min.css" />
     <link rel="stylesheet" href="Content/bootstrap-theme.min.css" />
-    <script type="text/javascript" src="Scripts/libs/jquery-2.1.1.min.js"></script>
-    <script type="text/javascript" src="Scripts/libs/bootstrap.min.js"></script>
-    <script type="text/javascript" src="Scripts/libs/knockout-3.1.0.js"></script>
+    <!--<script type="text/javascript" src="Scripts/libs/bootstrap.min.js"></script>-->
     <script data-main="Scripts/main" src="Scripts/libs/require.js"></script>
 </head>
 <body>
-    <section class="row">
+    <section class="row" id="settings">
         <div class="col-lg-4 col-lg-offset-1">
             <div class="row">
-                <button type="button" class="btn btn-default btn-lg" data-bind="click: newTodoItem">
+                <button type="button" class="btn btn-default btn-lg" data-bind="click: createNewTodoItemHandler">
                     <span class="glyphicon glyphicon-plus-sign"></span>Dodaj zadanie
                 </button>
+                Czas trwania sprintu:
+                <input type="date" data-bind="value: timeRange.from"/>
+                -
+                <input type="date" data-bind="value: timeRange.to" />
+                Długość sprintu: <span data-bind="text: duration"></span>
             </div>
         </div>
     </section>
-    <section class="row">
+    <section class="row" id="todoList">
         <div class="col-lg-5 col-lg-offset-1" data-bind="foreach: todoItems">
             <div class="checkbox">
                 <label>
-                    <input type="checkbox" data-item="checked: isDone">
+                    <input type="checkbox" data-bind="checked: isDone">
                     <input type="text" class="form-control" placeholder="Treść zadania" data-bind="value: text">
                 </label>
                 <input type="text" class="form-control" placeholder="Szacowany czas" data-bind="value: expectedWork">
@@ -34,11 +37,11 @@
             </div>
         </div>
     </section>
-    <section class="row">
+    <section class="row" id="summary">
         <div class="col-lg-4 col-lg-offset-1">
-            <span>Wykonana robota: <span class="badge" data-bind="text: workSummary.actual"></span></span>
-            <span>Cała robota do wykonania: <span class="badge" data-bind="text: workSummary.expected"></span></span>
-            <span>Pozostało do wykonania: <span class="badge" data-bind="text: workSummary.expected() - workSummary.actual()"></span></span>
+            <span>Przepracowane godziny: <span class="badge" data-bind="text: workSummary.actual"></span></span>
+            <span>Przewidziane godziny: <span class="badge" data-bind="text: workSummary.expected"></span></span>
+            <span>Pozostało godzin: <span class="badge" data-bind="text: workSummary.expected() - workSummary.actual()"></span></span>
         </div>
     </section>
 </body>

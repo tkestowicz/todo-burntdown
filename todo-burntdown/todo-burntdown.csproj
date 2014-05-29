@@ -79,6 +79,7 @@
     <Content Include="Content\bootstrap-theme.css.map" />
     <Content Include="Content\bootstrap.css.map" />
     <None Include="Scripts\libs\jquery-2.1.1.intellisense.js" />
+    <Content Include="Scripts\libs\knockout.validation.js" />
     <Content Include="Scripts\libs\bootstrap.js" />
     <Content Include="Scripts\libs\bootstrap.min.js" />
     <Content Include="Scripts\libs\jquery-2.1.1.js" />
@@ -88,6 +89,7 @@
     <Content Include="Scripts\libs\r.js" />
     <Content Include="Scripts\libs\require.js" />
     <Content Include="Scripts\typings\jquery\jquery.d.ts" />
+    <Content Include="Scripts\typings\knockout.validation\knockout.validation.d.ts" />
     <Content Include="Scripts\typings\knockout\knockout.d.ts" />
     <Content Include="Scripts\typings\requirejs\require.d.ts" />
     <TypeScriptCompile Include="Scripts\viewmodels\settingsViewModel.ts" />
