@@ -2,10 +2,9 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <title>ToDo burndown</title>
-    <link rel="stylesheet" href="Content/bootstrap.min.css" />
-    <link rel="stylesheet" href="Content/bootstrap-theme.min.css" />
-    <!--<script type="text/javascript" src="Scripts/libs/bootstrap.min.js"></script>-->
-    <script data-main="Scripts/main" src="Scripts/libs/require.js"></script>
+    <link rel="stylesheet" href="content/bootstrap.min.css" />
+    <link rel="stylesheet" href="content/bootstrap-theme.min.css" />
+    <script data-main="src/main" src="libs/require.js"></script>
 </head>
 <body>
     <section class="row" id="settings">
@@ -23,6 +22,9 @@
                 <button type="button" class="btn" data-bind="click: changeState, css: { 'btn-success': isRunning() === false, 'btn-danger': isRunning() === true }">
                     <span class="glyphicon" data-bind="css: { 'glyphicon-play': isRunning() === false, 'glyphicon-stop': isRunning() === true }"></span>
                     <span data-bind="text: isRunning() === true ? 'Zatrzymaj' : 'Rozpocznij'"></span>
+                </button>
+                <button type="button" class="btn btn-default" data-bind="click: addDay, visible: isRunning() === true">
+                    <span class="glyphicon glyphicon-plus-sign"></span>Dodaj dzień
                 </button>
             </div>
         </div>

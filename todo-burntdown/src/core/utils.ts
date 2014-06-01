@@ -8,4 +8,4 @@ export function calculateSumFromProperty<TElement>(items: TElement[], property: 
         .reduce(sum, 0);
 
     return isNaN(result) ? 0 : result;
-}; 
+};

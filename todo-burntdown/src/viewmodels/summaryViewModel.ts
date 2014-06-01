@@ -1,9 +1,13 @@
 ﻿import ko = require("ko");
 import todo = require('viewmodels/todoViewModel');
 
-export class SummaryViewModel {
+export interface ISummaryViewModelApi {
+    updateSummary: (summary: todo.IWorkSummary) => void;
+}
 
-    workSummary = {
+export class SummaryViewModel implements ISummaryViewModelApi{
+
+    private workSummary = {
         expected: ko.observable(0),
         actual: ko.observable(0)
     };

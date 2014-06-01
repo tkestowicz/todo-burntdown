@@ -1,6 +1,7 @@
-﻿/// <reference path="../typings/knockout/knockout.d.ts"/>
+﻿/// <reference path="../../libs/typings/knockout/knockout.d.ts"/>
 import ko = require('ko');
-import utils = require('utils');
+import utils = require('core/utils');
+import burntdown = require('viewmodels/burntdownChartViewModel');
 
 export interface ITodoItem {
     id: number;
@@ -15,7 +16,18 @@ export interface IWorkSummary {
     actual: KnockoutComputed<number>;
 }
 
-export class TodoViewModel {
+export interface ITodoViewModelApi {
+
+    toogleAccessibility: (enabled: boolean) => void;
+
+    valuesUpdated: (workSummary: IWorkSummary) => void;
+
+    burntdownProgressChanged: (day: number) => void;
+
+    reportBurntdownProgress: (report: burntdown.IBurntdownHistory) => void;
+}
+
+export class TodoViewModel implements ITodoViewModelApi {
 
     private todoItems: KnockoutObservableArray<ITodoItem> = ko.observableArray([]);
 
@@ -37,7 +49,7 @@ export class TodoViewModel {
         this.isEnabled(!enabled);
     }
 
-    newTodoItem = () => {
+    private newTodoItem = () => {
 
         var todoItem = {
             id: this.todoItems().length,
@@ -57,8 +69,17 @@ export class TodoViewModel {
         this.todoItems.push(todoItem);
     }
 
-    removeTodoItem = (item) => {
+    private removeTodoItem = (item) => {
         this.todoItems.remove(it => it.id === item.id);
     }
+
+    burntdownProgressChanged = (day: number) => {
+        this.reportBurntdownProgress({
+            day: day,
+            burnt: this.workSummary.actual()
+        });
+    };
+
+    reportBurntdownProgress: (report: burntdown.IBurntdownHistory) => void;
 
 };
