@@ -10,6 +10,7 @@ export interface IBurntdownCalculation {
     idealBurntdownCalculation(): IBurntdownRecord[];
     actualBurntdownUpdated: (record: IBurntdownRecord) => void; 
     actualBurntdownRecalulated: (burntdownHistory: IBurntdownRecord[]) => void;
+    reset: () => void;
 };
 
 export interface IBurntdownRecord {
@@ -42,13 +43,13 @@ export class BurntdownCalculation implements  IBurntdownCalculation {
         return result;
     }  
 
-    actualBurntdownUpdated(record: IBurntdownRecord) {
+    actualBurntdownUpdated = (record: IBurntdownRecord) => {
 
         var today = this.burntdownHistory[record.day];
 
         this.isInitialized();
 
-        if (today === undefined || today == null)
+        if (today === undefined || today === null)
             this.burntdownHistory.push({
                 day: record.day,
                 effort: this.config.estimatedEffort - record.effort
@@ -58,6 +59,11 @@ export class BurntdownCalculation implements  IBurntdownCalculation {
             this.burntdownHistory[record.day].effort = this.config.estimatedEffort - record.effort;
 
         this.actualBurntdownRecalulated(this.burntdownHistory);
+    }
+
+    reset = () => {
+        this.config = undefined;
+        this.burntdownHistory = [];
     }
 
     actualBurntdownRecalulated: (burntdownHistory: IBurntdownRecord[]) => void;

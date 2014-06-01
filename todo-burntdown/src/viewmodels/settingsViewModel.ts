@@ -8,6 +8,8 @@ export interface ISettingsViewModelApi {
     createNewTodoItemHandler: () => void;
 
     stateChanged: (isRunning: boolean) => void;
+
+    stop: () => void;
 }
 
 export class SettingsViewModel implements ISettingsViewModelApi{
@@ -21,12 +23,18 @@ export class SettingsViewModel implements ISettingsViewModelApi{
 
     private isRunning = ko.observable(false);
 
-    private duration = ko.computed(() => {
+    public duration = ko.computed(() => {
         if (this.timeRange.from() === undefined || this.timeRange.to() === undefined)
             return 0;
 
         return this.clock.toDays(this.clock.differenceBetweenDates(this.timeRange.from().toString(), this.timeRange.to().toString()));
     });
+
+    public stop = () => {
+        this.isRunning(!this.isRunning());
+
+        this.stateChanged(this.isRunning());
+    }
 
     public createNewTodoItemHandler: () => void;
     public stateChanged: (isRunning: boolean) => void;
@@ -35,14 +43,13 @@ export class SettingsViewModel implements ISettingsViewModelApi{
 
         if (this.isRunning())
             this.timer.stop();
-        else
+        else 
             this.timer.start(this.duration());
+        
 
         this.isRunning(!this.isRunning());
 
         this.stateChanged(this.isRunning());
     }
-
-    private addDay = () => this.clock.addDays(1);
 
 };

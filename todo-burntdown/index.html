@@ -23,9 +23,6 @@
                     <span class="glyphicon" data-bind="css: { 'glyphicon-play': isRunning() === false, 'glyphicon-stop': isRunning() === true }"></span>
                     <span data-bind="text: isRunning() === true ? 'Zatrzymaj' : 'Rozpocznij'"></span>
                 </button>
-                <button type="button" class="btn btn-default" data-bind="click: addDay, visible: isRunning() === true">
-                    <span class="glyphicon glyphicon-plus-sign"></span>Dodaj dzień
-                </button>
             </div>
         </div>
     </section>

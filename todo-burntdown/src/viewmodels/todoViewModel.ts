@@ -1,7 +1,7 @@
 ﻿/// <reference path="../../libs/typings/knockout/knockout.d.ts"/>
 import ko = require('ko');
 import utils = require('core/utils');
-import burntdown = require('viewmodels/burntdownChartViewModel');
+import burntdown = require('core/burntdownCalculation');
 
 export interface ITodoItem {
     id: number;
@@ -24,14 +24,14 @@ export interface ITodoViewModelApi {
 
     burntdownProgressChanged: (day: number) => void;
 
-    reportBurntdownProgress: (report: burntdown.IBurntdownHistory) => void;
+    reportBurntdownProgress: (report: burntdown.IBurntdownRecord) => void;
 }
 
 export class TodoViewModel implements ITodoViewModelApi {
 
     private todoItems: KnockoutObservableArray<ITodoItem> = ko.observableArray([]);
 
-    private workSummary = {
+    public workSummary = {
         expected: ko.computed(() => utils.calculateSumFromProperty(this.todoItems(), (el) => el.expectedWork()), this),
         actual: ko.computed(() => utils.calculateSumFromProperty(this.todoItems(), (el) => el.actualWork()), this)
     };
@@ -59,7 +59,7 @@ export class TodoViewModel implements ITodoViewModelApi {
             actualWork: ko.observable(0)
         };
 
-        todoItem.isDone.subscribe(function (isChecked) {
+        todoItem.isDone.subscribe((isChecked) => {
             if (isChecked)
                 todoItem.actualWork(todoItem.expectedWork());
             else
@@ -76,10 +76,10 @@ export class TodoViewModel implements ITodoViewModelApi {
     burntdownProgressChanged = (day: number) => {
         this.reportBurntdownProgress({
             day: day,
-            burnt: this.workSummary.actual()
+            effort: this.workSummary.actual()
         });
     };
 
-    reportBurntdownProgress: (report: burntdown.IBurntdownHistory) => void;
+    reportBurntdownProgress: (report: burntdown.IBurntdownRecord) => void;
 
 };

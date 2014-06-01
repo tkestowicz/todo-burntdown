@@ -8,6 +8,8 @@ export interface ITimer {
     elapsed: () => number;
 
     intervalElapsed: (days: number) => void;
+
+    stopped: () => void;
 };
 
 export class  Timer implements ITimer {
@@ -16,7 +18,7 @@ export class  Timer implements ITimer {
     private durationInDays: number;
     private intervalHandle: number;
 
-    constructor(private clock: clock.IClock) {
+    constructor(private clock: clock.IClock, private interval: number) {
     }
 
     start = (durationInDays: number) => {
@@ -30,7 +32,7 @@ export class  Timer implements ITimer {
             if (this.elapsed() >= this.durationInDays)
                 this.stop();
 
-        }, 4000);
+        }, this.interval);
     };
 
     stop = () => {
@@ -40,6 +42,8 @@ export class  Timer implements ITimer {
         this.durationInDays = undefined;
         this.startedAt = undefined;
         this.intervalHandle = undefined;
+
+        this.stopped();
     };
 
     elapsed = () => {
@@ -47,4 +51,6 @@ export class  Timer implements ITimer {
     };
 
     intervalElapsed: (days) => void;
+
+    stopped: () => void;
 };

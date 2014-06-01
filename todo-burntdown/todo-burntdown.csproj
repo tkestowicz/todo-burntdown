@@ -64,6 +64,8 @@
     <Content Include="libs\typings\jquery\jquery.d.ts" />
     <Content Include="libs\typings\knockout.validation\knockout.validation.d.ts" />
     <Content Include="libs\typings\knockout\knockout.d.ts" />
+    <TypeScriptCompile Include="tests\core\virtualClock.tests.ts" />
+    <TypeScriptCompile Include="src\core\virtualClock.ts" />
     <TypeScriptCompile Include="tests\core\burntdownCalculation.tests.ts" />
     <TypeScriptCompile Include="src\core\burntdownCalculation.ts" />
     <TypeScriptCompile Include="tests\viewmodels\burntdownChartViewModel.tests.ts" />
