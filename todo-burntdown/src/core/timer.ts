@@ -29,7 +29,7 @@ export class  Timer implements ITimer {
 
             this.intervalElapsed(this.elapsed());
 
-            if (this.elapsed() >= this.durationInDays)
+            if (this.elapsed() > this.durationInDays)
                 this.stop();
 
         }, this.interval);
