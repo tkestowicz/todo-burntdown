@@ -41,6 +41,10 @@ require(['viewmodels/todoViewModel', 'viewmodels/settingsViewModel', 'viewmodels
             todoList.toogleAccessibility(isRunning);
 
             if (isRunning === true) {
+
+                todoBurntdown.reset();
+                todoBurntdownChart.clear();
+
                 todoBurntdown.initialize({
                     estimatedEffort: todoList.workSummary.expected(),
                     sprintDurationInDays: todoSettings.duration()
@@ -48,9 +52,6 @@ require(['viewmodels/todoViewModel', 'viewmodels/settingsViewModel', 'viewmodels
 
                 todoBurntdownChart.render(todoBurntdown.idealBurntdownCalculation());
 
-            } else if (isRunning === true) {
-                todoBurntdown.reset();
-                todoBurntdownChart.clear();
             }
         };
         todoList.valuesUpdated = todoSummary.updateSummary;

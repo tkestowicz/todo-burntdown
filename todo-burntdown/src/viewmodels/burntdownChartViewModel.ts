@@ -72,8 +72,6 @@ export class BurntdownChartViewModel implements IBurntdownChartViewModelApi {
     }
 
     clear = () => {
-        this.show(false);
-
         this.burntdownData(this.chartSettings);
     }
 };

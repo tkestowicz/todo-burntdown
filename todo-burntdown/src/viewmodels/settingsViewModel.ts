@@ -31,7 +31,7 @@ export class SettingsViewModel implements ISettingsViewModelApi{
     });
 
     public stop = () => {
-        this.isRunning(!this.isRunning());
+        this.isRunning(false);
 
         this.stateChanged(this.isRunning());
     }
@@ -41,15 +41,14 @@ export class SettingsViewModel implements ISettingsViewModelApi{
 
     private changeState = () => {
 
-        if (this.isRunning())
+        if (this.isRunning() === true)
             this.timer.stop();
-        else 
+        else {
             this.timer.start(this.duration());
-        
 
-        this.isRunning(!this.isRunning());
-
-        this.stateChanged(this.isRunning());
+            this.isRunning(true);
+            this.stateChanged(this.isRunning());
+        }
     }
 
 };
