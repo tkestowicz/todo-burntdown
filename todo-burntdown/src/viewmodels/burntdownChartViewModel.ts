@@ -19,7 +19,7 @@ ko.bindingHandlers.burntdownChart = {
 
 export interface IBurntdownChartViewModelApi {
 
-    updateActual(actualBurntdown: bc.IBurntdownRecord[]): void;
+    updateActual(actualBurntdown: bc.IBurntdownRecord[], velocity: number): void;
     render(idealBurntdown: bc.IBurntdownRecord[]): void;
 
     clear(): void;
@@ -28,6 +28,8 @@ export interface IBurntdownChartViewModelApi {
 export class BurntdownChartViewModel implements IBurntdownChartViewModelApi {
     
     private show = ko.observable(false);
+
+    private velocity = ko.observable(0);
 
     private chartSettings = {
         labels: [],
@@ -62,13 +64,14 @@ export class BurntdownChartViewModel implements IBurntdownChartViewModelApi {
         this.show(true);
     }
 
-    updateActual = (actualBurntdown: bc.IBurntdownRecord[]) => {
+    updateActual = (actualBurntdown: bc.IBurntdownRecord[], velocity: number) => {
         var currentData = this.burntdownData(),
             actualValues = actualBurntdown.map((record, index, arr) => record.effort);
 
         currentData.datasets[1].data = actualValues;
 
         this.burntdownData(currentData);
+        this.velocity(velocity);
     }
 
     clear = () => {

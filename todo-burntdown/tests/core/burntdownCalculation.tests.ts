@@ -1,6 +1,11 @@
 ﻿import bc = require('src/core/burntdownCalculation');
 
-var sutFactory = () => new bc.BurntdownCalculation();
+var sutFactory = () => new bc.BurntdownCalculation(),
+    actualBurntdownHistory = [{ day: 0, effort: 5 }, { day: 0, effort: 11 },
+    { day: 1, effort: 11 }, { day: 2, effort: 11 }, { day: 3, effort: 14 },
+    { day: 3, effort: 16 }, { day: 3, effort: 16 }, { day: 3, effort: 16 },
+    { day: 4, effort: 21 }, { day: 4, effort: 25 }, { day: 4, effort: 25 },
+    { day: 5, effort: 27 }, { day: 6, effort: 27 }, { day: 7, effort: 42 }];
 
 QUnit.module('burntdown calculation');
 test('ideal burntdown is calculated correctly', () => {
@@ -33,12 +38,6 @@ test('actual burntdown is calculated correctly', () => {
         sprintDurationInDays: 7
     });
 
-    var actualBurntdownHistory = [{ day: 0, effort: 5 }, { day: 0, effort: 11 },
-        { day: 1, effort: 11 }, { day: 2, effort: 11 }, { day: 3, effort: 14 },
-        { day: 3, effort: 16 }, { day: 3, effort: 16 }, { day: 3, effort: 16 },
-        { day: 4, effort: 21 }, { day: 4, effort: 25 }, { day: 4, effort: 25 },
-        { day: 5, effort: 27 }, { day: 6, effort: 27 }, { day: 7, effort: 40 }];
-
     burntdown.actualBurntdownRecalulated = (burntdownHistory) => {
         actualBurntdown = burntdownHistory;
     };
@@ -47,7 +46,26 @@ test('actual burntdown is calculated correctly', () => {
 
     var expectedBurntdown = [{ day: 0, effort: 38 }, { day: 1, effort: 38 },
         { day: 2, effort: 38 }, { day: 3, effort: 33 }, { day: 4, effort: 24 },
-        { day: 5, effort: 22 }, { day: 6, effort: 22}, {day: 7, effort: 9}];
+        { day: 5, effort: 22 }, { day: 6, effort: 22}, {day: 7, effort: 7}];
 
     propEqual(actualBurntdown, expectedBurntdown);
+});
+
+test('actual velocity is calculated correctly', () => {
+
+    var burntdown = sutFactory(),
+        actualVelocity = 0;
+
+    burntdown.initialize({
+        estimatedEffort: 49,
+        sprintDurationInDays: 7
+    });
+
+    burntdown.actualBurntdownRecalulated = (burntdownHistory, velocity) => {
+        actualVelocity = velocity;
+    };
+
+    actualBurntdownHistory.forEach((record) => burntdown.actualBurntdownUpdated(record));
+
+    equal(actualVelocity, 6);
 });

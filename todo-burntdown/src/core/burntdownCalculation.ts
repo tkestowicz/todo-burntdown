@@ -9,7 +9,7 @@ export interface IBurntdownCalculation {
     initialize(config: IBurntdownConfiguration): void;
     idealBurntdownCalculation(): IBurntdownRecord[];
     actualBurntdownUpdated: (record: IBurntdownRecord) => void; 
-    actualBurntdownRecalulated: (burntdownHistory: IBurntdownRecord[]) => void;
+    actualBurntdownRecalulated: (burntdownHistory: IBurntdownRecord[], velocity: number) => void;
     reset: () => void;
 };
 
@@ -52,13 +52,15 @@ export class BurntdownCalculation implements  IBurntdownCalculation {
         if (today === undefined || today === null)
             this.burntdownHistory.push({
                 day: record.day,
-                effort: this.config.estimatedEffort - record.effort
+                effort: (record.day === 0)
+                            ? this.config.estimatedEffort
+                            : (this.config.estimatedEffort - record.effort)
             });
 
         else
             this.burntdownHistory[record.day].effort = this.config.estimatedEffort - record.effort;
 
-        this.actualBurntdownRecalulated(this.burntdownHistory);
+        this.actualBurntdownRecalulated(this.burntdownHistory, this.calculateVelocity(record));
     }
 
     reset = () => {
@@ -66,7 +68,7 @@ export class BurntdownCalculation implements  IBurntdownCalculation {
         this.burntdownHistory = [];
     }
 
-    actualBurntdownRecalulated: (burntdownHistory: IBurntdownRecord[]) => void;
+    actualBurntdownRecalulated: (burntdownHistory: IBurntdownRecord[], velocity: number) => void;
 
     private calculateLinearFunctionFactors() {
 
@@ -76,6 +78,14 @@ export class BurntdownCalculation implements  IBurntdownCalculation {
             b: this.config.estimatedEffort,
             a: -(this.config.estimatedEffort / this.config.sprintDurationInDays)
         };
+    }
+
+    private calculateVelocity(record: IBurntdownRecord) {
+        if (record.day === 0) return 0;
+
+        return (this.config.sprintDurationInDays < record.day)
+            ? record.effort / this.config.sprintDurationInDays
+            : record.effort / record.day;
     }
 
     private isInitialized() {

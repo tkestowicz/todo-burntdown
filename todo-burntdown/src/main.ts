@@ -57,10 +57,7 @@ require(['viewmodels/todoViewModel', 'viewmodels/settingsViewModel', 'viewmodels
         todoList.valuesUpdated = todoSummary.updateSummary;
         todoList.reportBurntdownProgress = todoBurntdown.actualBurntdownUpdated;
 
-        todoBurntdown.actualBurntdownRecalulated = (history) => {
-            todoBurntdownChart.updateActual(history);
-        };
-
+        todoBurntdown.actualBurntdownRecalulated = todoBurntdownChart.updateActual;
 
         ko.applyBindings(todoSettings, $('#settings')[0]);
         ko.applyBindings(todoList, $('#todoList')[0]);
