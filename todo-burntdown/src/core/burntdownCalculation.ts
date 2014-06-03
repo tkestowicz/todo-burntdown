@@ -1,4 +1,5 @@
 ﻿import utils = require('src/core/utils');
+import storage = require('src/core/storage');
 
 export interface IBurntdownConfiguration {
     estimatedEffort: number;
@@ -18,7 +19,7 @@ export interface IBurntdownRecord {
     effort: number;
 };
 
-export class BurntdownCalculation implements  IBurntdownCalculation {
+export class BurntdownCalculation implements IBurntdownCalculation, storage.ISerializable {
   
     private config: IBurntdownConfiguration;
 
@@ -91,6 +92,20 @@ export class BurntdownCalculation implements  IBurntdownCalculation {
     private isInitialized() {
         if (this.config === undefined || this.config === null)
             throw new Error('Burntdown calculation object is not initialized');
+    }
+
+    key = "burntdownCalculation";
+
+    serialize() {
+        return {
+            config: this.config,
+            history: this.burntdownHistory
+        };
+    }
+
+    deserialize(data: any) {
+        this.config = data.config;
+        this.burntdownHistory = data.history;
     }
 
 };

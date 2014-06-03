@@ -2,6 +2,7 @@
 import ko = require('ko');
 import timer = require('core/timer');
 import clock = require('core/clock');
+import storage = require('core/storage');
 
 export interface ISettingsViewModelApi {
 
@@ -12,7 +13,9 @@ export interface ISettingsViewModelApi {
     stop: () => void;
 }
 
-export class SettingsViewModel implements ISettingsViewModelApi{
+export class SettingsViewModel implements ISettingsViewModelApi, storage.ISerializable{
+
+    key = "settingsViewModel";
 
     constructor(private timer: timer.ITimer, private clock: clock.IClock){}
 
@@ -49,6 +52,23 @@ export class SettingsViewModel implements ISettingsViewModelApi{
             this.isRunning(true);
             this.stateChanged(this.isRunning());
         }
+    }
+
+    public serialize() {
+        return {
+            timeRange: {
+                from: this.timeRange.from(),
+                to: this.timeRange.to()
+            },
+            isRunning: this.isRunning()
+        };
+    }
+
+    public deserialize(data: any) {
+
+        this.timeRange.from(data.timeRange.from);
+        this.timeRange.to(data.timeRange.to);
+        this.isRunning(data.isRunning);
     }
 
 };

@@ -1,4 +1,5 @@
 ﻿import clock = require('core/clock');
+import storage = require('core/storage');
 
 export interface ITimer {
     start: (durationInDays: number) => void;
@@ -12,7 +13,7 @@ export interface ITimer {
     stopped: () => void;
 };
 
-export class  Timer implements ITimer {
+export class  Timer implements ITimer, storage.ISerializable {
     
     private startedAt: Date;
     private durationInDays: number;
@@ -25,14 +26,7 @@ export class  Timer implements ITimer {
         this.startedAt = this.clock.now();
         this.durationInDays = durationInDays;
 
-        this.intervalHandle = setInterval(() => {
-
-            this.intervalElapsed(this.elapsed());
-
-            if (this.elapsed() > this.durationInDays)
-                this.stop();
-
-        }, this.interval);
+        this.resume();
     };
 
     stop = () => {
@@ -50,7 +44,38 @@ export class  Timer implements ITimer {
         return this.clock.toDays(this.clock.differenceBetweenDates(this.startedAt.toString(), this.clock.now().toString()));
     };
 
+    private resume() {
+        this.intervalHandle = setInterval(() => {
+
+            this.intervalElapsed(this.elapsed());
+
+            if (this.elapsed() > this.durationInDays)
+                this.stop();
+
+        }, this.interval);
+    }
+
     intervalElapsed: (days) => void;
 
     stopped: () => void;
+
+    key = "timer";
+
+    serialize() {
+        return {
+            startedAt: (this.startedAt !== undefined) ? this.startedAt.valueOf() : undefined,
+            duration: this.durationInDays
+        };
+    }
+
+    deserialize(data: any) {
+        if (data.startedAt !== undefined) {
+            this.startedAt = new Date(data.startedAt);
+            this.durationInDays = data.duration;
+
+            this.intervalElapsed(this.elapsed());
+
+            this.resume();   
+        }
+    }
 };

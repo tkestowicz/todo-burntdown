@@ -2,6 +2,7 @@
 import ko = require('ko');
 import utils = require('core/utils');
 import burntdown = require('core/burntdownCalculation');
+import storage = require('core/storage');
 
 export interface ITodoItem {
     id: number;
@@ -27,7 +28,7 @@ export interface ITodoViewModelApi {
     reportBurntdownProgress: (report: burntdown.IBurntdownRecord) => void;
 }
 
-export class TodoViewModel implements ITodoViewModelApi {
+export class TodoViewModel implements ITodoViewModelApi, storage.ISerializable {
 
     private todoItems: KnockoutObservableArray<ITodoItem> = ko.observableArray([]);
 
@@ -59,15 +60,19 @@ export class TodoViewModel implements ITodoViewModelApi {
             actualWork: ko.observable(0)
         };
 
-        todoItem.isDone.subscribe((isChecked) => {
+        this.addTodoItemToList(todoItem);
+    }
+
+    private addTodoItemToList = (item: ITodoItem) => {
+        item.isDone.subscribe((isChecked) => {
             if (isChecked)
-                todoItem.actualWork(todoItem.expectedWork());
+                item.actualWork(item.expectedWork());
             else
-                todoItem.actualWork(0);
+                item.actualWork(0);
         });
 
-        this.todoItems.push(todoItem);
-    }
+        this.todoItems.push(item);
+    } 
 
     private removeTodoItem = (item) => {
         this.todoItems.remove(it => it.id === item.id);
@@ -81,5 +86,39 @@ export class TodoViewModel implements ITodoViewModelApi {
     };
 
     reportBurntdownProgress: (report: burntdown.IBurntdownRecord) => void;
+
+
+    key = "todoListViewModel";
+
+    serialize() {
+        return {
+            isEnabled: this.isEnabled(),
+            todoItems: this.todoItems().map(item =>  {
+                return {
+                    id: item.id,
+                    isDone: item.isDone(),
+                    text: item.text(),
+                    expectedWork: item.expectedWork(),
+                    actualWork: item.actualWork()
+                };
+            })
+        };
+    }
+
+    deserialize(data: any) {
+        this.isEnabled(data.isEnabled);
+
+        data.todoItems.forEach(item => {
+            var todoItem = {
+                id: this.todoItems().length,
+                isDone: ko.observable(item.isDone),
+                text: ko.observable(item.text),
+                expectedWork: ko.observable(item.expectedWork),
+                actualWork: ko.observable(item.actualWork)
+            };
+
+            this.addTodoItemToList(todoItem);
+        });
+    }
 
 };
