@@ -46,19 +46,29 @@ export class BurntdownCalculation implements IBurntdownCalculation, storage.ISer
 
     actualBurntdownUpdated = (record: IBurntdownRecord) => {
 
-        var today = this.burntdownHistory[record.day];
+        var today = this.burntdownHistory[record.day],
+            daysInHistory = this.burntdownHistory.length,
+            lastRecord = this.burntdownHistory[daysInHistory - 1];
 
         this.isInitialized();
 
-        if (today === undefined || today === null)
+        if (today === undefined || today === null) {
+
+            // fill the gap in history if user came back after few days
+            for (var day = daysInHistory; day < record.day; day++) {
+                this.burntdownHistory.push({
+                    day: day,
+                    effort: lastRecord.effort
+                });
+            }
+
             this.burntdownHistory.push({
                 day: record.day,
                 effort: (record.day === 0)
-                            ? this.config.estimatedEffort
-                            : (this.config.estimatedEffort - record.effort)
+                    ? this.config.estimatedEffort
+                    : (this.config.estimatedEffort - record.effort)
             });
-
-        else
+        } else
             this.burntdownHistory[record.day].effort = this.config.estimatedEffort - record.effort;
 
         this.actualBurntdownRecalulated(this.burntdownHistory, this.calculateVelocity(record));

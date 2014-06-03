@@ -51,6 +51,30 @@ test('actual burntdown is calculated correctly', () => {
     propEqual(actualBurntdown, expectedBurntdown);
 });
 
+test('actual burntdown with empty space between days is calculated correctly', () => {
+
+    var burntdown = sutFactory(),
+        actualBurntdown: bc.IBurntdownRecord[];
+
+    burntdown.initialize({
+        estimatedEffort: 49,
+        sprintDurationInDays: 7
+    });
+
+    burntdown.actualBurntdownRecalulated = (burntdownHistory) => {
+        actualBurntdown = burntdownHistory;
+    };
+
+    var actualHistory = [{ day: 0, effort: 0 }, { day: 1, effort: 10 }, {day: 4, effort: 25}];
+
+    actualHistory.forEach((record) => burntdown.actualBurntdownUpdated(record));
+
+    var expectedBurntdown = [{ day: 0, effort: 49 }, { day: 1, effort: 39 },
+        { day: 2, effort: 39 }, { day: 3, effort: 39 }, { day: 4, effort: 24 }];
+
+    propEqual(actualBurntdown, expectedBurntdown);
+});
+
 test('actual velocity is calculated correctly', () => {
 
     var burntdown = sutFactory(),
