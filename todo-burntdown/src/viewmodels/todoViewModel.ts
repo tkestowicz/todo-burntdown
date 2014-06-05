@@ -1,5 +1,4 @@
 ﻿/// <reference path="../../libs/typings/knockout/knockout.d.ts"/>
-import ko = require('ko');
 import utils = require('core/utils');
 import burntdown = require('core/burntdownCalculation');
 import storage = require('core/storage');

@@ -5,26 +5,22 @@ require.config({
     paths: {
         //main libraries
         jquery: 'jquery-2.1.1.min',
-        ko: 'knockout-3.1.0',
         bootstrap: 'bootstrap.min',
         chart: 'chartjs',
         viewmodels: '../src/viewmodels',
-        core: '../src/core'
+        core: '../src/core',
     },
-    deps: ['jquery', 'bootstrap', 'ko'],
+    deps: ['jquery', 'bootstrap'],
     shim: {
-        jquery: {
-            exports: '$'
-        },
         bootstrap: {
             deps: ['jquery']
-        }
+        },
     }
 });
 
 require([
-    'viewmodels/todoViewModel', 'viewmodels/settingsViewModel', 'viewmodels/summaryViewModel', 'viewmodels/burntdownChartViewModel', 'core/burntdownCalculation', 'core/timer', 'core/virtualClock', 'core/storage', 'ko', 'jquery', 'chart'],
-    (todo, settings, summary, burntdownChart, burntdown, timer, clock, storage, ko, $, chart) => {
+    'viewmodels/todoViewModel', 'viewmodels/settingsViewModel', 'viewmodels/summaryViewModel', 'viewmodels/burntdownChartViewModel', 'core/burntdownCalculation', 'core/timer', 'core/virtualClock', 'core/storage', 'jquery', 'chart'],
+    (todo, settings, summary, burntdownChart, burntdown, timer, clock, storage, $, chart) => {
 
         var todoClock = new clock.VirtualClock(new Date(Date.now()), 10000),
             todoTimer = new timer.Timer(todoClock, 2000),

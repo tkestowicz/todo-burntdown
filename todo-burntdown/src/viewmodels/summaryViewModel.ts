@@ -1,5 +1,4 @@
-﻿import ko = require("ko");
-import todo = require('viewmodels/todoViewModel');
+﻿import todo = require('viewmodels/todoViewModel');
 
 export interface ISummaryViewModelApi {
     updateSummary: (summary: todo.IWorkSummary) => void;

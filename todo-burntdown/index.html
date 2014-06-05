@@ -4,13 +4,16 @@
     <title>ToDo burndown</title>
     <link rel="stylesheet" href="content/bootstrap.min.css" />
     <link rel="stylesheet" href="content/bootstrap-theme.min.css" />
+    <script type="text/javascript" src="libs/knockout-3.1.0.js"></script>
+    <script type="text/javascript" src="libs/knockout-validation.js"></script>
+    <script type="text/javascript" src="libs/knockout-validation.pl-PL.js"></script>
     <script data-main="src/main" src="libs/require.js"></script>
 </head>
 <body>
     <section class="row" id="settings">
         <div class="col-lg-4 col-lg-offset-1">
             <div class="row">
-                <button type="button" class="btn btn-default btn-lg" data-bind="click: createNewTodoItemHandler, disable: isRunning() === true">
+                <button type="button" class="btn btn-default btn-lg" data-bind="click: addNewItemClicked, disable: isRunning() === true">
                     <span class="glyphicon glyphicon-plus-sign"></span>Dodaj zadanie
                 </button>
                 Czas trwania sprintu:
@@ -18,7 +21,7 @@
                 -
                 <input type="date" data-bind="value: timeRange.to, disable: isRunning() === true" />
                 Długość sprintu: <span data-bind="text: duration"></span>
-
+                <span data-bind="validationMessage: duration" class="validationMessage"></span>
                 <button type="button" class="btn" data-bind="click: changeState, css: { 'btn-success': isRunning() === false, 'btn-danger': isRunning() === true }">
                     <span class="glyphicon" data-bind="css: { 'glyphicon-play': isRunning() === false, 'glyphicon-stop': isRunning() === true }"></span>
                     <span data-bind="text: isRunning() === true ? 'Zatrzymaj' : 'Rozpocznij'"></span>

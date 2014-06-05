@@ -1,5 +1,5 @@
 ﻿/// <reference path="../../libs/typings/knockout/knockout.d.ts"/>
-import ko = require('ko');
+/// <reference path="../../libs/typings/knockout.validation/knockout.validation.d.ts"/>
 import timer = require('core/timer');
 import clock = require('core/clock');
 import storage = require('core/storage');
@@ -17,26 +17,50 @@ export class SettingsViewModel implements ISettingsViewModelApi, storage.ISerial
 
     key = "settingsViewModel";
 
-    constructor(private timer: timer.ITimer, private clock: clock.IClock){}
+    constructor(private timer: timer.ITimer, private clock: clock.IClock) {
+        this.applyValidation();
+    }
 
     private timeRange = {
-        from: ko.observable(),
-        to: ko.observable()
+        from: ko.observable<string>(),
+        to: ko.observable<string>()
     };
 
     private isRunning = ko.observable(false);
 
     public duration = ko.computed(() => {
-        if (this.timeRange.from() === undefined || this.timeRange.to() === undefined)
+        if (this.timeRange.from() === undefined || this.timeRange.from() === ""
+            || this.timeRange.to() === undefined || this.timeRange.to() === "")
             return 0;
 
         return this.clock.toDays(this.clock.differenceBetweenDates(this.timeRange.from().toString(), this.timeRange.to().toString()));
     });
+    
+    applyValidation() {
+        this.timeRange.from.extend({ required: true });
+        this.timeRange.to.extend({ required: true });
+        this.duration.extend({
+            validation: {
+                validator: () => {
+                    return Date.parse(this.timeRange.from()) < Date.parse(this.timeRange.to());
+                },
+                message: 'Data pocz\u0105tku musi by\u0107 wcze\u015Bniejsza ni\u017C data ko\u0144ca',
+                onlyIf: () => this.duration() !== 0
+            }
+        });
+    }
 
     public stop = () => {
         this.isRunning(false);
 
         this.stateChanged(this.isRunning());
+    }
+
+    private addNewItemClicked = () => {
+        var errors = ko.validation.group([this.timeRange, this.duration], { deep: true });
+
+        if(errors().length === 0)
+            this.createNewTodoItemHandler();
     }
 
     public createNewTodoItemHandler: () => void;

@@ -1,5 +1,4 @@
 ﻿/// <reference path="../../libs/typings/custom.d.ts"/>
-import ko = require('ko');
 import bc = require('core/burntdownCalculation');
 import storage = require('core/storage');
 
