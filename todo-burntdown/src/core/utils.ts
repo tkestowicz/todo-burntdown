@@ -1,5 +1,7 @@
 ﻿var sum = (result: number, element: number, index: number, array: number[]): number => {
-    return result + parseInt(element.toString());
+    var value = (element !== undefined) ? element : 0;
+
+    return result + parseInt(value.toString());
 };
 
 export function calculateSumFromProperty<TElement>(items: TElement[], property: (ofItem: TElement) => number){

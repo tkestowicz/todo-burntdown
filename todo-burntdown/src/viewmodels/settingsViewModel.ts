@@ -11,6 +11,8 @@ export interface ISettingsViewModelApi {
     stateChanged: (isRunning: boolean) => void;
 
     stop: () => void;
+
+    isTodoListValid: () => boolean;
 }
 
 export class SettingsViewModel implements ISettingsViewModelApi, storage.ISerializable{
@@ -57,16 +59,25 @@ export class SettingsViewModel implements ISettingsViewModelApi, storage.ISerial
     }
 
     private addNewItemClicked = () => {
+        if(this.validate() === true)
+            this.createNewTodoItemHandler();
+    }
+
+    private validate() {
         var errors = ko.validation.group([this.timeRange, this.duration], { deep: true });
 
-        if(errors().length === 0)
-            this.createNewTodoItemHandler();
+        errors.showAllMessages();
+
+        return (errors().length === 0);
     }
 
     public createNewTodoItemHandler: () => void;
     public stateChanged: (isRunning: boolean) => void;
+    public isTodoListValid: () => boolean;
 
     private changeState = () => {
+
+        if (this.validate() === false || this.isTodoListValid() === false) return;
 
         if (this.isRunning() === true)
             this.timer.stop();

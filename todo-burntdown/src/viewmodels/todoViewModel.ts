@@ -25,6 +25,8 @@ export interface ITodoViewModelApi {
     burntdownProgressChanged: (day: number) => void;
 
     reportBurntdownProgress: (report: burntdown.IBurntdownRecord) => void;
+
+    validate: () => boolean;
 }
 
 export class TodoViewModel implements ITodoViewModelApi, storage.ISerializable {
@@ -49,20 +51,42 @@ export class TodoViewModel implements ITodoViewModelApi, storage.ISerializable {
         this.isEnabled(!enabled);
     }
 
+    private applyValidation(item: ITodoItem) {
+
+        item.text.extend({ required: true });
+        item.expectedWork.extend({
+            required: true,
+            number: true,
+            min: { params: 1, message: "Czasoch\u0142onno\u015B\u0107 musi by\u0107 wi\u0119ksza od 0." }
+        });
+        item.actualWork.extend({
+            required: true,
+            number: true,
+            min: { params: 0, message: "Czasoch\u0142onno\u015B\u0107 nie mo\u017Ce by\u0107 ujemna." }
+        });
+
+        return item;
+    }
+
     private newTodoItem = () => {
 
         var todoItem = {
             id: this.todoItems().length,
             isDone: ko.observable(false),
-            text: ko.observable(''),
-            expectedWork: ko.observable(0),
-            actualWork: ko.observable(0)
+            text: ko.observable<string>(),
+            expectedWork: ko.observable<number>(),
+            actualWork: ko.observable<number>()
         };
 
         this.addTodoItemToList(todoItem);
     }
 
     private addTodoItemToList = (item: ITodoItem) => {
+
+        if (this.validate() === false) return;
+
+        item = this.applyValidation(item);
+
         item.isDone.subscribe((isChecked) => {
             if (isChecked)
                 item.actualWork(item.expectedWork());
@@ -83,6 +107,14 @@ export class TodoViewModel implements ITodoViewModelApi, storage.ISerializable {
             effort: this.workSummary.actual()
         });
     };
+
+    validate = () => {
+        var errors = ko.validation.group(this.todoItems(), { deep: true });
+
+        errors.showAllMessages();
+
+        return errors().length === 0;
+    }
 
     reportBurntdownProgress: (report: burntdown.IBurntdownRecord) => void;
 

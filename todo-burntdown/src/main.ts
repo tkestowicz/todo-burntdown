@@ -41,6 +41,7 @@ require([
         todoTimer.intervalElapsed = todoList.burntdownProgressChanged;
         todoTimer.stopped = todoSettings.stop;
         todoSettings.createNewTodoItemHandler = todoList.newTodoItem;
+        todoSettings.isTodoListValid = todoList.validate; // implement
         todoSettings.stateChanged = (isRunning: boolean) => {
 
             todoList.toogleAccessibility(isRunning);
