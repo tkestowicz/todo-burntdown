@@ -4,58 +4,74 @@
     <title>ToDo burndown</title>
     <link rel="stylesheet" href="content/bootstrap.min.css" />
     <link rel="stylesheet" href="content/bootstrap-theme.min.css" />
+    <script type="text/javascript" src="https://apis.google.com/js/client.js"></script>
     <script type="text/javascript" src="libs/knockout-3.1.0.js"></script>
     <script type="text/javascript" src="libs/knockout-validation.js"></script>
     <script type="text/javascript" src="libs/knockout-validation.pl-PL.js"></script>
-    <script data-main="src/main" src="libs/require.js"></script>
+    <script type="text/javascript" data-main="src/main" src="libs/require.js"></script>
 </head>
 <body>
-    <section class="row" id="settings">
-        <div class="col-lg-4 col-lg-offset-1">
-            <div class="row">
-                <button type="button" class="btn btn-default btn-lg" data-bind="click: addNewItemClicked, disable: isRunning() === true">
-                    <span class="glyphicon glyphicon-plus-sign"></span>Dodaj zadanie
-                </button>
-                Czas trwania sprintu:
-                <input type="date" data-bind="value: timeRange.from, disable: isRunning() === true" />
-                -
-                <input type="date" data-bind="value: timeRange.to, disable: isRunning() === true" />
-                Długość sprintu: <span data-bind="text: duration"></span>
-                <span data-bind="validationMessage: duration" class="validationMessage"></span>
-                <button type="button" class="btn" data-bind="click: changeState, css: { 'btn-success': isRunning() === false, 'btn-danger': isRunning() === true }">
-                    <span class="glyphicon" data-bind="css: { 'glyphicon-play': isRunning() === false, 'glyphicon-stop': isRunning() === true }"></span>
-                    <span data-bind="text: isRunning() === true ? 'Zatrzymaj' : 'Rozpocznij'"></span>
-                </button>
+    <section id="app" style="display: none;">
+        <section class="row" id="userInfo">
+            <div class="col-lg-12">
+                <h1 id="name" data-bind="text: info.name"></h1>
+                <img data-bind="attr: { src: info.avatarUrl }" />
             </div>
-        </div>
-    </section>
-    <section class="row" id="todoList">
-        <div class="col-lg-5 col-lg-offset-1" data-bind="foreach: todoItems">
-            <div class="checkbox">
-                <label>
-                    <input type="checkbox" data-bind="checked: isDone">
-                    <input type="text" class="form-control" placeholder="Treść zadania" data-bind="value: text, enable: $parent.isEnabled">
-                </label>
-                <input type="text" class="form-control" placeholder="Szacowany czas" data-bind="value: expectedWork, enable: $parent.isEnabled">
-                <input type="text" class="form-control" placeholder="Wykorzystany czas" data-bind="value: actualWork">
-                <button type="button" class="btn btn-default btn-xs" data-bind="click: $parent.removeTodoItem, visible: $parent.isEnabled">
-                    <span class="glyphicon glyphicon-plus-sign"></span>Usuń zadanie
-                </button>
+        </section>
+        <section class="row" id="settings">
+            <div class="col-lg-4 col-lg-offset-1">
+                <div class="row">
+                    <button type="button" class="btn btn-default btn-lg" data-bind="click: addNewItemClicked, disable: isRunning() === true">
+                        <span class="glyphicon glyphicon-plus-sign"></span>Dodaj zadanie
+                    </button>
+                    Czas trwania sprintu:
+                    <input type="date" data-bind="value: timeRange.from, disable: isRunning() === true" />
+                    -
+                    <input type="date" data-bind="value: timeRange.to, disable: isRunning() === true" />
+                    Długość sprintu: <span data-bind="text: duration"></span>
+                    <span data-bind="validationMessage: duration" class="validationMessage"></span>
+                    <button type="button" class="btn" data-bind="click: changeState, css: { 'btn-success': isRunning() === false, 'btn-danger': isRunning() === true }">
+                        <span class="glyphicon" data-bind="css: { 'glyphicon-play': isRunning() === false, 'glyphicon-stop': isRunning() === true }"></span>
+                        <span data-bind="text: isRunning() === true ? 'Zatrzymaj' : 'Rozpocznij'"></span>
+                    </button>
+                    <button type="button" class="btn btn-primary" data-bind="click: reset">
+                        <span class="glyphicon glyphicon-refresh"></span>
+                        Reset
+                    </button>
+                </div>
             </div>
-        </div>
-    </section>
-    <section class="row" id="summary">
-        <div class="col-lg-4 col-lg-offset-1">
-            <span>Przepracowane godziny: <span class="badge" data-bind="text: workSummary.actual"></span></span>
-            <span>Przewidziane godziny: <span class="badge" data-bind="text: workSummary.expected"></span></span>
-            <span>Pozostało godzin: <span class="badge" data-bind="text: workSummary.expected() - workSummary.actual()"></span></span>
-        </div>
-    </section>
-    <section class="row" id="chart" data-bind="visible: show">
-        <div class="col-lg-12">
-            <span>Prędkość wykonywania zadań: <span class="badge" data-bind="text: velocity"></span></span>
-            <canvas id="burntdown" height="450" width="600" data-bind="burntdownChart: burntdownData"></canvas>
-        </div>
+        </section>
+        <section class="row" id="todoList">
+            <div class="col-lg-5 col-lg-offset-1" data-bind="foreach: todoItems">
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox" data-bind="checked: isDone">
+                        <input type="text" class="form-control" placeholder="Treść zadania" data-bind="value: text, enable: $parent.isEnabled">
+                    </label>
+                    <input type="text" class="form-control" placeholder="Szacowany czas" data-bind="value: expectedWork, enable: $parent.isEnabled">
+                    <input type="text" class="form-control" placeholder="Wykorzystany czas" data-bind="value: actualWork">
+                    <button type="button" class="btn btn-default btn-xs" data-bind="click: $parent.removeTodoItem, visible: $parent.isEnabled">
+                        <span class="glyphicon glyphicon-plus-sign"></span>Usuń zadanie
+                    </button>
+                </div>
+            </div>
+            <button type="button" class="btn btn-default btn-xs" data-bind="click: removeAll, visible: isEnabled && todoItems().length > 0">
+                <span class="glyphicon glyphicon-plus-sign"></span>Usuń wszystkie zadania
+            </button>
+        </section>
+        <section class="row" id="summary">
+            <div class="col-lg-4 col-lg-offset-1">
+                <span>Przepracowane godziny: <span class="badge" data-bind="text: workSummary.actual"></span></span>
+                <span>Przewidziane godziny: <span class="badge" data-bind="text: workSummary.expected"></span></span>
+                <span>Pozostało godzin: <span class="badge" data-bind="text: workSummary.expected() - workSummary.actual()"></span></span>
+            </div>
+        </section>
+        <section class="row" id="chart" data-bind="visible: show">
+            <div class="col-lg-12">
+                <span>Prędkość wykonywania zadań: <span class="badge" data-bind="text: velocity"></span></span>
+                <canvas id="burntdown" height="450" width="600" data-bind="burntdownChart: burntdownData"></canvas>
+            </div>
+        </section>
     </section>
 </body>
 </html>

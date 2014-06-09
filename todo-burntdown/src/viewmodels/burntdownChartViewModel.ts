@@ -1,6 +1,7 @@
 ﻿/// <reference path="../../libs/typings/custom.d.ts"/>
 import bc = require('core/burntdownCalculation');
 import storage = require('core/storage');
+import reset = require('core/reset');
 
 ko.bindingHandlers.burntdownChart = {
     update: (element, valueAccessor) => {
@@ -17,15 +18,13 @@ ko.bindingHandlers.burntdownChart = {
     }
 };
 
-export interface IBurntdownChartViewModelApi {
+export interface IBurntdownChartViewModelApi extends storage.ISerializable, reset.IResetable {
 
     updateActual(actualBurntdown: bc.IBurntdownRecord[], velocity: number): void;
     render(idealBurntdown: bc.IBurntdownRecord[]): void;
-
-    clear(): void;
 };
 
-export class BurntdownChartViewModel implements IBurntdownChartViewModelApi, storage.ISerializable {
+export class BurntdownChartViewModel implements IBurntdownChartViewModelApi {
     
     private show = ko.observable(false);
 
@@ -74,8 +73,9 @@ export class BurntdownChartViewModel implements IBurntdownChartViewModelApi, sto
         this.velocity(velocity);
     }
 
-    clear = () => {
+    reset = () => {
         this.burntdownData(this.chartSettings);
+        this.show(false);
     }
 
     key = "burntdownChart";

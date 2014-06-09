@@ -1,7 +1,6 @@
 ﻿import realClock = require('src/core/clock');
-import storage = require('src/core/storage');
 
-export class VirtualClock implements realClock.IClock, storage.ISerializable {
+export class VirtualClock implements realClock.IClock {
 
     public daysOffset = 0;
 

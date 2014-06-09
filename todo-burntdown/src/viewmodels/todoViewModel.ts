@@ -2,6 +2,7 @@
 import utils = require('core/utils');
 import burntdown = require('core/burntdownCalculation');
 import storage = require('core/storage');
+import reset = require('core/reset');
 
 export interface ITodoItem {
     id: number;
@@ -16,7 +17,7 @@ export interface IWorkSummary {
     actual: KnockoutComputed<number>;
 }
 
-export interface ITodoViewModelApi {
+export interface ITodoViewModelApi extends storage.ISerializable, reset.IResetable {
 
     toogleAccessibility: (enabled: boolean) => void;
 
@@ -27,9 +28,16 @@ export interface ITodoViewModelApi {
     reportBurntdownProgress: (report: burntdown.IBurntdownRecord) => void;
 
     validate: () => boolean;
+
+    newTodoItem: () => void;
+
+    workSummary: {
+        expected: KnockoutObservable<number>;
+        actual: KnockoutObservable<number>;
+    }
 }
 
-export class TodoViewModel implements ITodoViewModelApi, storage.ISerializable {
+export class TodoViewModel implements ITodoViewModelApi {
 
     private todoItems: KnockoutObservableArray<ITodoItem> = ko.observableArray([]);
 
@@ -60,7 +68,6 @@ export class TodoViewModel implements ITodoViewModelApi, storage.ISerializable {
             min: { params: 1, message: "Czasoch\u0142onno\u015B\u0107 musi by\u0107 wi\u0119ksza od 0." }
         });
         item.actualWork.extend({
-            required: true,
             number: true,
             min: { params: 0, message: "Czasoch\u0142onno\u015B\u0107 nie mo\u017Ce by\u0107 ujemna." }
         });
@@ -68,7 +75,7 @@ export class TodoViewModel implements ITodoViewModelApi, storage.ISerializable {
         return item;
     }
 
-    private newTodoItem = () => {
+    public newTodoItem = () => {
 
         var todoItem = {
             id: this.todoItems().length,
@@ -101,6 +108,10 @@ export class TodoViewModel implements ITodoViewModelApi, storage.ISerializable {
         this.todoItems.remove(it => it.id === item.id);
     }
 
+    private removeAll = () => {
+        this.todoItems.removeAll();
+    }
+
     burntdownProgressChanged = (day: number) => {
         this.reportBurntdownProgress({
             day: day,
@@ -118,13 +129,16 @@ export class TodoViewModel implements ITodoViewModelApi, storage.ISerializable {
 
     reportBurntdownProgress: (report: burntdown.IBurntdownRecord) => void;
 
+    public reset = () => {
+        this.removeAll();
+    }
 
     key = "todoListViewModel";
 
     serialize() {
         return {
             isEnabled: this.isEnabled(),
-            todoItems: this.todoItems().map(item =>  {
+            todoItems: this.todoItems().map(item => {
                 return {
                     id: item.id,
                     isDone: item.isDone(),

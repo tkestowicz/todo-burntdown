@@ -3,8 +3,9 @@
 import timer = require('core/timer');
 import clock = require('core/clock');
 import storage = require('core/storage');
+import reset = require('core/reset');
 
-export interface ISettingsViewModelApi {
+export interface ISettingsViewModelApi extends storage.ISerializable, reset.IResetable {
 
     createNewTodoItemHandler: () => void;
 
@@ -13,11 +14,19 @@ export interface ISettingsViewModelApi {
     stop: () => void;
 
     isTodoListValid: () => boolean;
+
+    duration: KnockoutComputed<number>;
+
+    bindResetHandler: (resetHandler: reset.IResetable) => void;
 }
 
-export class SettingsViewModel implements ISettingsViewModelApi, storage.ISerializable{
+export class SettingsViewModel implements ISettingsViewModelApi{
 
     key = "settingsViewModel";
+
+    private resetHandlers: reset.IResetable[] = [];
+
+    private internalControl = false;
 
     constructor(private timer: timer.ITimer, private clock: clock.IClock) {
         this.applyValidation();
@@ -39,15 +48,19 @@ export class SettingsViewModel implements ISettingsViewModelApi, storage.ISerial
     });
     
     applyValidation() {
-        this.timeRange.from.extend({ required: true });
-        this.timeRange.to.extend({ required: true });
+        this.timeRange.from.extend({ required: {
+            onlyIf: () => this.internalControl === false
+        } });
+        this.timeRange.to.extend({ required: {
+            onlyIf: () => this.internalControl === false
+        } });
         this.duration.extend({
             validation: {
                 validator: () => {
                     return Date.parse(this.timeRange.from()) < Date.parse(this.timeRange.to());
                 },
                 message: 'Data pocz\u0105tku musi by\u0107 wcze\u015Bniejsza ni\u017C data ko\u0144ca',
-                onlyIf: () => this.duration() !== 0
+                onlyIf: () => this.duration() !== 0 && this.internalControl === false
             }
         });
     }
@@ -63,10 +76,10 @@ export class SettingsViewModel implements ISettingsViewModelApi, storage.ISerial
             this.createNewTodoItemHandler();
     }
 
-    private validate() {
+    private validate(show = true) {
         var errors = ko.validation.group([this.timeRange, this.duration], { deep: true });
 
-        errors.showAllMessages();
+        errors.showAllMessages(show);
 
         return (errors().length === 0);
     }
@@ -100,10 +113,38 @@ export class SettingsViewModel implements ISettingsViewModelApi, storage.ISerial
     }
 
     public deserialize(data: any) {
+        this.internalControl = true;
 
         this.timeRange.from(data.timeRange.from);
         this.timeRange.to(data.timeRange.to);
         this.isRunning(data.isRunning);
+
+        this.internalControl = false;
+    }
+
+    public reset = () => {
+
+        this.internalControl = true;
+
+        this.timeRange.from(undefined);
+        this.timeRange.to(undefined);
+
+        this.validate(false);
+
+        if (this.isRunning() === true){
+            this.timer.stop();
+
+            this.isRunning(false);
+            this.stateChanged(this.isRunning());
+        }
+
+        this.resetHandlers.forEach(handle => handle.reset());
+
+        this.internalControl = false;
+    }
+
+    public bindResetHandler = (resetHandler: reset.IResetable) => {
+        this.resetHandlers.push(resetHandler);
     }
 
 };

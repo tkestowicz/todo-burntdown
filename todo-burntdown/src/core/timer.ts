@@ -1,7 +1,7 @@
 ﻿import clock = require('core/clock');
 import storage = require('core/storage');
 
-export interface ITimer {
+export interface ITimer extends storage.ISerializable{
     start: (durationInDays: number) => void;
 
     stop: () => void;
@@ -13,7 +13,7 @@ export interface ITimer {
     stopped: () => void;
 };
 
-export class  Timer implements ITimer, storage.ISerializable {
+export class  Timer implements ITimer {
     
     private startedAt: Date;
     private durationInDays: number;

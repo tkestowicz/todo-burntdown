@@ -64,6 +64,9 @@
     <Content Include="libs\bootstrap.js" />
     <Content Include="libs\bootstrap.min.js" />
     <Content Include="libs\chartjs.js" />
+    <Content Include="libs\typings\gapi\gapi.d.ts" />
+    <TypeScriptCompile Include="src\core\reset.ts" />
+    <TypeScriptCompile Include="src\app.ts" />
     <TypeScriptCompile Include="src\core\storage.ts" />
     <TypeScriptCompile Include="libs\typings\custom.d.ts" />
     <Content Include="libs\jquery-2.1.1.js" />

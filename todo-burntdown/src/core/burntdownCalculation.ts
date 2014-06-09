@@ -1,12 +1,13 @@
 ﻿import utils = require('src/core/utils');
 import storage = require('src/core/storage');
+import reset = require('src/core/reset');
 
 export interface IBurntdownConfiguration {
     estimatedEffort: number;
     sprintDurationInDays: number;
 };
 
-export interface IBurntdownCalculation {
+export interface IBurntdownCalculation extends storage.ISerializable, reset.IResetable {
     initialize(config: IBurntdownConfiguration): void;
     idealBurntdownCalculation(): IBurntdownRecord[];
     actualBurntdownUpdated: (record: IBurntdownRecord) => void; 
@@ -19,7 +20,7 @@ export interface IBurntdownRecord {
     effort: number;
 };
 
-export class BurntdownCalculation implements IBurntdownCalculation, storage.ISerializable {
+export class BurntdownCalculation implements IBurntdownCalculation {
   
     private config: IBurntdownConfiguration;
 
@@ -94,9 +95,11 @@ export class BurntdownCalculation implements IBurntdownCalculation, storage.ISer
     private calculateVelocity(record: IBurntdownRecord) {
         if (record.day === 0) return 0;
 
-        return (this.config.sprintDurationInDays < record.day)
+        var velocity = (this.config.sprintDurationInDays < record.day)
             ? record.effort / this.config.sprintDurationInDays
             : record.effort / record.day;
+
+        return parseFloat(new Number(velocity).toPrecision(2));
     }
 
     private isInitialized() {

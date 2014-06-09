@@ -1,4 +1,6 @@
-﻿export interface IClock {
+﻿import storage = require('core/storage');
+
+export interface IClock extends storage.ISerializable{
 
     now: () => Date;
 
@@ -18,4 +20,9 @@ export class Clock implements IClock {
     };
 
     toDays = (miliseconds: number): number => Math.floor(miliseconds / Clock.dayInMiliseconds);
+
+    key = "clock";
+
+    serialize() { return {}; }
+    deserialize(data){}
 };   
